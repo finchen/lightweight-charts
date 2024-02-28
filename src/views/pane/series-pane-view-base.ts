@@ -17,7 +17,7 @@ export abstract class SeriesPaneViewBase<TSeriesType extends SeriesType, ItemTyp
 	protected _items: ItemType[] = [];
 	protected _itemsVisibleRange: SeriesItemsIndexesRange | null = null;
 	protected readonly abstract _renderer: TRenderer;
-	private readonly _extendedVisibleRange: boolean;
+	protected readonly _extendedVisibleRange: boolean;
 
 	public constructor(series: Series<TSeriesType>, model: ChartModel, extendedVisibleRange: boolean) {
 		this._series = series;
@@ -62,24 +62,7 @@ export abstract class SeriesPaneViewBase<TSeriesType extends SeriesType, ItemTyp
 
 	protected abstract _prepareRendererData(): void;
 
-	private _makeValid(): void {
-		if (this._dataInvalidated) {
-			this._fillRawPoints();
-			this._dataInvalidated = false;
-		}
-
-		if (this._optionsInvalidated) {
-			this._updateOptions();
-			this._optionsInvalidated = false;
-		}
-
-		if (this._invalidated) {
-			this._makeValidImpl();
-			this._invalidated = false;
-		}
-	}
-
-	private _makeValidImpl(): void {
+	protected _makeValidImpl(): void {
 		const priceScale = this._series.priceScale();
 		const timeScale = this._model.timeScale();
 
@@ -107,5 +90,22 @@ export abstract class SeriesPaneViewBase<TSeriesType extends SeriesType, ItemTyp
 		this._convertToCoordinates(priceScale, timeScale, firstValue.value);
 
 		this._prepareRendererData();
+	}
+
+	private _makeValid(): void {
+		if (this._dataInvalidated) {
+			this._fillRawPoints();
+			this._dataInvalidated = false;
+		}
+
+		if (this._optionsInvalidated) {
+			this._updateOptions();
+			this._optionsInvalidated = false;
+		}
+
+		if (this._invalidated) {
+			this._makeValidImpl();
+			this._invalidated = false;
+		}
 	}
 }
