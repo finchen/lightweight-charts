@@ -106,8 +106,16 @@ export class PaneRendererBrokenArea extends MediaCoordinatesPaneRenderer {
 			}
 
 			if (this._data.items[fromItemIndex].extendRight) {
-				ctx.lineTo(this._data.items[toItemIndex].end, this._data.items[toItemIndex].higherY);
-				ctx.lineTo(this._data.items[toItemIndex].end, this._data.items[toItemIndex].lowerY);
+				let extendToX = this._data.items[toItemIndex].end;
+				if (i < chunks.length - 1) {
+					const nextChunkFirstItem = this._data.items[chunks[i+1][0]];
+					const currentChunkLastItem = this._data.items[chunks[i][1]];
+					if (nextChunkFirstItem.time - currentChunkLastItem.time <= 1) {
+						extendToX = nextChunkFirstItem.x;
+					}
+				}
+				ctx.lineTo(extendToX, this._data.items[toItemIndex].higherY);
+				ctx.lineTo(extendToX, this._data.items[toItemIndex].lowerY);
 			}
 
 			for (let j = toItemIndex; j >= fromItemIndex; --j) {
