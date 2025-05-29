@@ -55,7 +55,7 @@ export class PaneRendererBrokenArea extends MediaCoordinatesPaneRenderer {
 				const currItem = this._data.items[i];
 
 				if (lastTime !== null && (currItem.time - lastTime > 1 || currItem.color !== lastColor)) {
-					chunks.push([chunkStart, currItem.time - lastTime > 1 ? i - 1 : i]);
+					chunks.push([chunkStart, i - 1]);
 					chunkStart = i;
 				}
 
@@ -106,16 +106,8 @@ export class PaneRendererBrokenArea extends MediaCoordinatesPaneRenderer {
 			}
 
 			if (this._data.items[fromItemIndex].extendRight) {
-				let extendToX = this._data.items[toItemIndex].end;
-				if (i < chunks.length - 1) {
-					const nextChunkFirstItem = this._data.items[chunks[i+1][0]];
-					const currentChunkLastItem = this._data.items[chunks[i][1]];
-					if (nextChunkFirstItem.time - currentChunkLastItem.time <= 1) {
-						extendToX = nextChunkFirstItem.x;
-					}
-				}
-				ctx.lineTo(extendToX, this._data.items[toItemIndex].higherY);
-				ctx.lineTo(extendToX, this._data.items[toItemIndex].lowerY);
+				ctx.lineTo(this._data.items[toItemIndex].end, this._data.items[toItemIndex].higherY);
+				ctx.lineTo(this._data.items[toItemIndex].end, this._data.items[toItemIndex].lowerY);
 			}
 
 			for (let j = toItemIndex; j >= fromItemIndex; --j) {
